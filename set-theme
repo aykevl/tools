@@ -1,0 +1,80 @@
+#!/usr/bin/python3
+
+# Change the desktop theme automatically. Tested on KDE.
+# You can run this in a cron job, but be sure to set DBUS_SESSION_BUS_ADDRESS
+# (for example, DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus).
+
+from pydbus import SessionBus
+import configparser
+import os
+import subprocess
+import sys
+import datetime
+import astral
+import astral.sun
+import re
+import time
+
+bus = SessionBus()
+
+delta_template = '''#!/bin/sh
+/usr/bin/delta %s "$@"
+'''
+
+def setTheme(theme):
+    terminalIdList = bus.get('org.kde.yakuake', '/yakuake/sessions').terminalIdList()
+    for terminalId in map(int, terminalIdList.split(',')):
+        bus.get('org.kde.yakuake', '/Sessions/%d' % (terminalId + 1)).setProfile(theme)
+        bus.get('org.kde.yakuake', '/Windows/%d' % (terminalId + 1)).setDefaultProfile(theme)
+
+    # Update Konsole settings.
+    text = open(os.path.expanduser('~/.config/konsolerc'), 'r').read()
+    text = re.sub(r'DefaultProfile=[a-zA-Z]+.profile', 'DefaultProfile=%s.profile' % theme, text, count=1)
+    open(os.path.expanduser('~/.config/konsolerc'), 'w').write(text)
+
+    deltaParams = ''
+    if theme == 'Light':
+        deltaParams = '--light'
+        subprocess.run(['lookandfeeltool', '-a', 'org.kde.breeze.desktop'])
+    elif theme == 'Dark':
+        deltaParams = '--plus-style="syntax #005800" --minus-style="syntax #580000" --plus-emph-style="syntax #227722" --minus-emph-style="syntax #aa2222"'
+        subprocess.run(['lookandfeeltool', '-a', 'org.kde.breezedark.desktop'])
+    # The lookandfeeltool updates the plasma theme, while I want it to stay
+    # breeze-alphablack. So update it manually.
+    subprocess.run(['plasma-apply-desktoptheme', 'breeze-alphablack'])
+
+    open(os.path.expanduser('~/bin/delta'), 'w').write(delta_template % deltaParams)
+
+def currentTheme():
+    config = configparser.ConfigParser()
+    config.read(os.path.expanduser('~/.config/kdedefaults/kdeglobals'))
+    if config['General']['ColorScheme'] == 'BreezeLight':
+        return 'Light'
+    else:
+        return 'Dark'
+
+def isDark():
+    now = datetime.datetime.now(datetime.datetime.now().astimezone().tzinfo)
+    city = astral.LocationInfo('Nijmegen', 'Nederland', 'Europe/Amsterdam')
+    s = astral.sun.sun(city.observer, date=now)
+    print('sunrise:', s['sunrise'])
+    print('sunset: ', s['sunset'])
+    return now < s['sunrise'] or now > s['sunset']
+
+def loop():
+    while 1:
+        if isDark():
+            theme = 'Dark'
+        else:
+            theme = 'Light'
+        if theme != currentTheme():
+            setTheme(theme)
+        time.sleep(60)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        # Set a specific theme.
+        setTheme(sys.argv[1])
+    else:
+        loop()
