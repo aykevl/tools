@@ -39,6 +39,7 @@ def setTheme(theme):
     elif theme == 'Dark':
         deltaParams = '--plus-style="syntax #005800" --minus-style="syntax #580000" --plus-emph-style="syntax #227722" --minus-emph-style="syntax #aa2222"'
         subprocess.run(['lookandfeeltool', '-a', 'org.kde.breezedark.desktop'])
+    subprocess.run(['plasma-apply-cursortheme', 'Oxygen_White'])
     # The lookandfeeltool updates the plasma theme, while I want it to stay
     # breeze-alphablack. So update it manually.
     subprocess.run(['plasma-apply-desktoptheme', 'breeze-alphablack'])
@@ -61,13 +62,19 @@ def isDark():
     print('sunset: ', s['sunset'])
     return now < s['sunrise'] or now > s['sunset']
 
+def scheduledTheme():
+    if isDark():
+        return 'Dark'
+    else:
+        return 'Light'
+
+
 def loop():
+    theme = currentTheme()
     while 1:
-        if isDark():
-            theme = 'Dark'
-        else:
-            theme = 'Light'
-        if theme != currentTheme():
+        newTheme = scheduledTheme()
+        if newTheme != theme:
+            theme = newTheme
             setTheme(theme)
         time.sleep(60)
 
