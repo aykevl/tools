@@ -1,0 +1,11 @@
+// Use both right win and right ctrl as right ctrl key. Useful to use both the
+// ThinkPad keyboard and the built-in Apple keyboard using the same layout.
+// This replaces the "swap right win and right ctrl keys" option.
+// Original idea: https://www.codejam.info/2022/04/xmodmaprc-wayland.html
+partial modifier_keys
+xkb_symbols "swap_rwin_rctl" {
+    replace key <RWIN> { [ Control_R ] };
+    //replace key <RCTL> { [ Super_R ] };
+    //modifier_map Mod4    { <RCTL> };
+    modifier_map Control { <RWIN> };
+};
