@@ -1,0 +1,13 @@
+[color]
+        ui = auto
+[user]
+        name = Ayke van Laethem
+        email = aykevanlaethem@gmail.com
+[grep]
+        lineNumber = true
+[push]
+        default = simple
+[core]
+        excludesfile = ~/src/dotfiles/gitignore
+[merge]
+        conflictstyle = diff3
