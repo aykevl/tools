@@ -1,0 +1,31 @@
+{
+  // Useful resource:
+  // https://gist.github.com/trusktr/1e5e516df4e8032cbc3d
+
+  // Make home/end work like on Linux/Windows.
+  "\UF729"  = moveToBeginningOfParagraph:; // home
+  "\UF72B"  = moveToEndOfParagraph:; // end
+  "$\UF729" = moveToBeginningOfParagraphAndModifySelection:; // shift-home
+  "$\UF72B" = moveToEndOfParagraphAndModifySelection:; // shift-end
+  "^\UF729" = moveToBeginningOfDocument:; // ctrl-home
+  "^\UF72B" = moveToEndOfDocument:; // ctrl-end
+  "^$\UF729" = moveToBeginningOfDocumentAndModifySelection:; // ctrl-shift-home
+  "^$\UF72B" = moveToEndOfDocumentAndModifySelection:; // ctrl-shift-end
+
+  // cut/copy/paste like on Linux/Windows
+  "^a" = "selectAll:";
+  "^x" = "cut:";
+  "^c" = "copy:";
+  "^v" = "paste:";
+
+  // ctrl+arrow keys (move word)
+  //"^\UF703" = ("moveWordForward:", "moveWordForward:", "moveWordBackward:");
+  //"^$\UF703" = ("moveWordForwardAndModifySelection:", "moveWordForwardAndModifySelection:", "moveWordBackwardAndModifySelection:");
+  "^\UF702" = "moveWordBackward:";
+  "^$\UF702" = "moveWordBackwardAndModifySelection:";
+  "^\UF703" = "moveWordForward:";
+  "^$\UF703" = "moveWordForwardAndModifySelection:";
+
+  // ctrl+backspace
+  "^\177" = "deleteWordBackward:"; // ctl-delete
+}
