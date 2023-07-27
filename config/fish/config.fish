@@ -15,7 +15,12 @@ alias readelf="llvm-readelf"
 alias lldb="lldb"
 
 # Misc aliases
-alias cat="bat -pp"
+if test -e /bin/batcat
+	# Debian uses batcat instead of bat
+	alias cat="batcat -pp"
+else
+	alias cat="bat -pp"
+end
 alias diff="diff --color=auto"
 alias df="df -h"
 alias egrep="egrep --color=auto"
