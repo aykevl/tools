@@ -15,6 +15,7 @@ alias readelf="llvm-readelf"
 alias lldb="lldb"
 
 # Misc aliases
+alias cat="bat -pp"
 alias diff="diff --color=auto"
 alias df="df -h"
 alias egrep="egrep --color=auto"
