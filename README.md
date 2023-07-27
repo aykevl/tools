@@ -9,7 +9,7 @@ License: public domain. Feel free to do whatever you want with this code.
 On Linux:
   * Enable Settings -> Advanced -> Ctrl position -> Swap Right Win with Right Ctrl
   * Symlink config/xkb -> ~/.config/xkb
-  * Edit (or create) `/etc/modprobe.d/hid_apple.conf` to contain `options hid_apple fnmode=2 swap_opt_cmd=1`
+  * Edit (or create) `/etc/modprobe.d/hid_apple.conf` to contain `options hid_apple fnmode=2 swap_opt_cmd=1`, then update initramfs (run `sudo mkinitcpio -P` on Arch).
 
 On MacOS:
   * Use [Karabiner](https://karabiner-elements.pqrs.org/) to change keyboards:
