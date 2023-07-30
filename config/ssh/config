@@ -1,0 +1,9 @@
+Host pearl
+HostName pearl.aykevl.nl
+User ayke
+
+# Local network
+
+Host ayke-laptop-l450
+HostName 10.224.69.170
+User ayke
