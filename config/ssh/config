@@ -2,6 +2,11 @@ Host pearl
 HostName pearl.aykevl.nl
 User ayke
 
+# Private VPN
+
+Host raspi-vpn
+HostName 10.20.30.3
+
 # Local network
 
 Host ayke-laptop-l450
