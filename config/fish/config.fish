@@ -1,6 +1,12 @@
 fish_vi_key_bindings
 set fish_greeting
 
+# OS specific
+switch (uname)
+	case Darwin
+		source ~/.profile
+end
+
 # ls-related aliases
 alias ls="exa --group-directories-first"
 alias la="exa --group-directories-first -la"
@@ -24,6 +30,7 @@ end
 # Misc aliases
 alias diff="diff --color=auto"
 alias df="df -h"
+alias du="du -h"
 alias egrep="egrep --color=auto"
 alias free="free -h"
 alias py=python3

@@ -6,3 +6,4 @@ Session.vim
 *.rs.bk
 .idea
 .gradle
+.DS_Store
