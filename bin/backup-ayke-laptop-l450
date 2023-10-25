@@ -1,0 +1,57 @@
+#!/bin/sh
+
+set -e
+
+source ~/.config/borg-config.sh
+
+#echo '### break lock'
+#borg break-lock
+#exit
+
+echo '### backup'
+borg create --verbose --filter AME --stats --progress --compression lz4 \
+    --exclude '*/tmp' \
+    --exclude '*/llvm-project*' \
+    --exclude '*/llvm-build*' \
+    --exclude '*/playground/release.tar.gz' \
+    ::'{hostname}-{now}' \
+    /home/ayke/Documents \
+    /home/ayke/kobo \
+    /home/ayke/Pictures \
+    /home/ayke/privé \
+    /home/ayke/projects \
+    /home/ayke/Radboud-B-informatica \
+    /home/ayke/src/emculator \
+    /home/ayke/src/github.com/aykevl \
+    /home/ayke/src/github.com/tinygo-org \
+    /home/ayke/src/tinygo.org \
+    /home/ayke/Thuis \
+    /home/ayke/Videos/poi
+
+
+echo '### prune'
+borg prune                          \
+    --list                          \
+    --glob-archives '{hostname}-*'  \
+    --keep-daily    7               \
+    --keep-weekly   4               \
+    --keep-monthly  6
+
+#export unison="unison"
+#$unison -auto ayke-desktop
+#unset unison
+#echo
+#echo --------------------------------------------------------------------------------
+#echo
+##$unison -auto Pictures
+#dtsync-gtk Pictures
+#echo
+#echo --------------------------------------------------------------------------------
+#echo
+##$unison -auto Music
+#dtsync-gtk Music
+#echo
+#echo --------------------------------------------------------------------------------
+#echo
+##$unison -auto Music-portable
+#dtsync-gtk Music-portable

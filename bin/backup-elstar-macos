@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -e
+
+source ~/.config/borg-config.sh
+
+#echo '### break lock'
+#borg break-lock
+#exit
+
+host=elstar-macos
+
+echo '### backup'
+borg create --verbose --filter AME --stats --progress --compression auto,zstd \
+    --exclude '*/tmp' \
+    --exclude '*/llvm-project*' \
+    --exclude '*/llvm-build*' \
+    --exclude '*/playground/release.tar.gz' \
+    ::"$host-{now}" \
+    /Users/ayke/src/ayke \
+    /Users/ayke/src/tinygo/site \
+    /Users/ayke/src/tinygo/tinygo \
+    /Users/ayke/src/tinygo/vscode-tinygo
+
+
+echo '### prune'
+borg prune                          \
+    --list                          \
+    --glob-archives "$host-*"  \
+    --keep-daily    7               \
+    --keep-weekly   4               \
+    --keep-monthly  6
+
+echo '### compact'
+borg compact
