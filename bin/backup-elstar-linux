@@ -8,19 +8,28 @@ source ~/.config/borg-config.sh
 #borg break-lock
 #exit
 
-host=elstar-macos
+host=elstar-linux
 
 echo '### backup'
 borg create --verbose --filter AME --stats --progress --compression auto,zstd \
     --exclude '*/tmp' \
     --exclude '*/llvm-project*' \
     --exclude '*/llvm-build*' \
+    --exclude '*/tinygo/build' \
+    --exclude '*/ayke/things/watch/InfiniTime' \
+    --exclude '*/ayke/things/watch/wasp-os' \
+    --exclude '*/ayke/things/watch/mynewt-blinky' \
+    --exclude '*/mch2022-template-app*' \
     --exclude '*/playground/release.tar.gz' \
     ::"$host-{now}" \
-    /Users/ayke/src/ayke \
-    /Users/ayke/src/tinygo/site \
-    /Users/ayke/src/tinygo/tinygo \
-    /Users/ayke/src/tinygo/vscode-tinygo
+    /home/ayke/Documents \
+    /home/ayke/Pictures \
+    /home/ayke/src/ayke \
+    /home/ayke/src/tinygo/bluetooth \
+    /home/ayke/src/tinygo/drivers \
+    /home/ayke/src/tinygo/playground \
+    /home/ayke/src/tinygo/site \
+    /home/ayke/src/tinygo/tinygo
 
 
 echo '### prune'
