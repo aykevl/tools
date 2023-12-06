@@ -35,6 +35,10 @@ These are mostly meant for myself, but they might be useful for other people too
   * Configure a few things using raspi-config:
     * Switch to USB audio device.
     * Configure wifi
+  * Allow pipewire to use high priority (to avoid stuttering):
+    ```
+    adduser $USER pipewire
+    ```
 
 ## Automatic backups
 
