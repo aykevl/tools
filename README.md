@@ -27,3 +27,18 @@ On MacOS:
   * Add some system changes for text movement etc, by symlinking `~/Library/KeyBindings/DefaultKeyBinding.dict`.
   * Change Spotlight keyboard shortcut to Option-Space (to preserve previous key):
     Settings -> Keyboard -> Keyboard Shortcuts -> Spotlight
+
+## Windows setup
+
+Windows Terminal:
+  * [Use Git Bash](https://www.youtube.com/watch?v=zM9Mb-otqww).
+  * Configure keyboard shortcuts, by adding this to the settings.json file (in the `actions` list):
+    ```javascript
+    // globalSummon has tabs whereas quake mode doesn't
+    { "command": { "action": "globalSummon", "name": "hotkey", "dropdownDuration": 0 }, "keys": "f9" },
+    //{ "command": { "action": "newTab" }, "keys": "ctrl+shift+n" }, // doesn't work
+    { "command": "nextTab", "keys": "ctrl+pgdn" },
+    { "command": "prevTab", "keys": "ctrl+pgup" },
+    { "command": { "action": "moveTab", "direction": "forward" }, "keys": "ctrl+shift+pgdn" },
+    { "command": { "action": "moveTab", "direction": "backward" }, "keys": "ctrl+shift+pgup" }
+    ```
