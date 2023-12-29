@@ -37,6 +37,7 @@ alias du="du -h"
 alias egrep="egrep --color=auto"
 alias free="free -h"
 alias py=python3
+alias vi="nvim -p"
 alias vim="nvim -p"
 alias rg='rg --sort-files'
 alias gg='git grep'
