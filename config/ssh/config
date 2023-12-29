@@ -12,3 +12,7 @@ HostName 10.20.30.3
 Host ayke-laptop-l450
 HostName 10.224.69.170
 User ayke
+
+Host raspi
+HostName 10.65.42.112
+User ayke
