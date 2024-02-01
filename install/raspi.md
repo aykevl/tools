@@ -35,10 +35,29 @@ These are mostly meant for myself, but they might be useful for other people too
   * Configure a few things using raspi-config:
     * Switch to USB audio device.
     * Configure wifi
+    * enable console auto-login
   * Allow pipewire to use high priority (to avoid stuttering):
     ```
     adduser $USER pipewire
     ```
+  * Create daemon to correct audio on startup at ~/.config/systemd/user/alsa-volume.service:
+    ```
+    [Unit]
+    Description=Set volume level
+    
+    [Service]
+    Type=simple
+    ExecStartPre=/bin/sleep 30
+    ExecStart=/usr/bin/amixer -c 0 sset PCM '100%'
+    
+    [Install]
+    WantedBy=default.target
+    ```
+  * Start this daemon by default:
+    ```
+    systemctl --user enable alsa-volume
+    ```
+
 
 ## Automatic backups
 
@@ -59,6 +78,27 @@ These are mostly meant for myself, but they might be useful for other people too
     ```
   * Run `docker-compose up -d` in the homeassistant directory.
 
+## Cloud
+
+  * Create user unit file at ~/.config/systemd/user/cloud-control.service:
+    ```
+    [Unit]
+    Description=Cloud MQTT control
+    
+    [Service]
+    WorkingDirectory=/home/ayke/src/things/cloud
+    ExecStart=/home/ayke/src/things/cloud/control.py
+    Restart=always
+    RestartSec=12
+    
+    [Install]
+    WantedBy=default.target
+    ```
+  * Enable the daemon at startup:
+    ```
+    systemctl --user enable cloud-control
+    ```
+
 ## librespot
 
   * Install dependencies:
@@ -67,6 +107,33 @@ These are mostly meant for myself, but they might be useful for other people too
     ```
   * Clone librespot repo
   * `cargo build --features pulseaudio-backend -j1 --release`
+
+## spotifyd
+
+  * Install dependencies:
+    ```
+    sudo apt-get install libasound2-dev libdbus-1-dev
+    ```
+  * Clone spotifyd repo
+  * `cargo build --features pulseaudio_backend,dbus_mpris -j1 --release`
+  * Create systemd file at ~/.config/systemd/user/spotifyd.service:
+    ```
+    [Unit]
+    Description=Spotify daemon
+    
+    [Service]
+    WorkingDirectory=/home/ayke
+    ExecStart=/home/ayke/src/spotifyd/target/release/spotifyd --no-daemon
+    Restart=always
+    RestartSec=12
+    
+    [Install]
+    WantedBy=default.target
+    ```
+  * Enable spotifyd at startup:
+    ```
+    systemctl --user enable spotifyd
+    ```
 
 ## librespot-java
 
