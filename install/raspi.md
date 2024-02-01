@@ -30,7 +30,7 @@ These are mostly meant for myself, but they might be useful for other people too
   * Install updates using `sudo up`.
   * Install basic tools:
     ```
-    sudo apt-get install byobu fish neovim git bat htop ripgrep exa borgbackup
+    sudo apt-get install byobu fish neovim git bat htop ripgrep exa picocom golang borgbackup
     ```
   * Configure a few things using raspi-config:
     * Switch to USB audio device.

@@ -12,6 +12,8 @@ host=elstar-linux
 
 echo '### backup'
 borg create --verbose --filter AME --stats --progress --compression auto,zstd \
+    --exclude '*/.config/Code*' \
+    --exclude '*/.config/chromium*' \
     --exclude '*/tmp' \
     --exclude '*/llvm-project*' \
     --exclude '*/llvm-build*' \
@@ -22,6 +24,7 @@ borg create --verbose --filter AME --stats --progress --compression auto,zstd \
     --exclude '*/mch2022-template-app*' \
     --exclude '*/playground/release.tar.gz' \
     ::"$host-{now}" \
+    /home/ayke/.config \
     /home/ayke/Documents \
     /home/ayke/Pictures \
     /home/ayke/src/ayke \

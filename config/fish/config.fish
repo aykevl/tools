@@ -8,6 +8,9 @@ switch (uname)
 end
 
 # ls-related aliases
+if test -e /bin/eza
+	alias exa="eza"
+end
 alias ls="exa --group-directories-first"
 alias la="exa --group-directories-first -la"
 alias ll="exa --group-directories-first -l"
@@ -22,9 +25,9 @@ alias lldb="lldb"
 # Cat/bat stuff
 if test -e /bin/batcat
 	# Debian uses batcat instead of bat
-	alias cat="batcat -pp"
+	alias cat="batcat -pp --theme=ansi"
 else
-	alias cat="bat -pp"
+	alias cat="bat -pp --theme=ansi"
 end
 
 # Misc aliases
@@ -36,4 +39,5 @@ alias free="free -h"
 alias py=python3
 alias vim="nvim -p"
 alias rg='rg --sort-files'
+alias gg='git grep'
 alias top='htop'

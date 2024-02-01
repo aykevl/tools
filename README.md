@@ -7,9 +7,11 @@ License: public domain. Feel free to do whatever you want with this code.
 ## Apple keyboard with Windows/Linux layout
 
 On Linux:
-  * Enable Settings -> Advanced -> Ctrl position -> Swap Right Win with Right Ctrl
+  * Enable Settings -> Keyboard -> Advanced -> Ctrl position -> Swap Right Win with Right Ctrl
   * Symlink config/xkb -> ~/.config/xkb
-  * Edit (or create) `/etc/modprobe.d/hid_apple.conf` to contain `options hid_apple fnmode=2 swap_opt_cmd=1`, then update initramfs (run `sudo mkinitcpio -P` on Arch).
+  * Enable `hid_apple` parameters:
+      * Edit (or create) `/etc/modprobe.d/hid_apple.conf` to contain `options hid_apple fnmode=2 swap_opt_cmd=1`.
+      * Update initramfs (`sudo mkinitcpio -P` on Arch, `sudo dracut --regenerate-all --force` on Fedora).
 
 On MacOS:
   * Use [Karabiner](https://karabiner-elements.pqrs.org/) to change keyboards:
