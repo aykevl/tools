@@ -31,7 +31,7 @@ else
 end
 
 # Misc aliases
-alias diff="diff --color=auto"
+alias diff="delta --color-only --paging=never"
 alias df="df -h"
 alias du="du -h"
 alias egrep="egrep --color=auto"
