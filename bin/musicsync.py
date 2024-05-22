@@ -28,12 +28,22 @@ def convert_worker(q):
         srcpath = job['srcpath']
         srcext = os.path.splitext(srcpath)[1]
         if srcext == '.flac':
+            # Convert from FLAC to .wav, and then encode as AAC.
+            # The .wav intermediary format may be needed in some cases when
+            # afconvert can't read a particular file but the reference flac
+            # decoder can.
             print('Convert:', job['dstrelpath'])
             dstpath = job['dstpath']
             tmppath = dstpath + '.tmp'
-            result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', srcpath, tmppath])
+            wavpath = tempfile.NamedTemporaryFile().name
+            result = subprocess.run(['flac', '--decode', '--silent', '--force', '--output-name='+wavpath, srcpath])
             if result.returncode != 0:
-                print('Fail:   ', job['dstrelpath'])
+                print('Fail decode:', job['dstrelpath'])
+                q.task_done()
+                continue
+            result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', wavpath, tmppath])
+            if result.returncode != 0:
+                print('Fail encode:', job['dstrelpath'])
                 q.task_done()
                 continue
 
