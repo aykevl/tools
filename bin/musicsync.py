@@ -30,7 +30,6 @@ def convert_worker(q):
         if srcext == '.flac':
             print('Convert:', job['dstrelpath'])
             dstpath = job['dstpath']
-            srctags = job['srctags']
             tmppath = dstpath + '.tmp'
             result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', srcpath, tmppath])
             if result.returncode != 0:
@@ -40,17 +39,12 @@ def convert_worker(q):
 
             # copy tags
             dsttags = mutagen.File(tmppath)
-            for tag in ['title', 'album', 'date', 'tracknumber']:
-                if tag  in srctags:
-                    dsttags[tagMap[tag]] = srctags[tag]
-            # Handle artist separately (the MP3 player doesn't support
-            # albumartist).
-            artist = srctags.get('albumartist', srctags.get('artist'))
-            if not artist:
-                print('No artist:', job['dstrelpath'])
-                q.task_done()
-                continue
-            dsttags[tagMap['artist']] = artist
+            dsttags[tagMap['title']] = job['title']
+            dsttags[tagMap['artist']] = job['artist']
+            dsttags[tagMap['album']] = job['album']
+            if job['date']:
+                dsttags[tagMap['date']] = job['date']
+            dsttags[tagMap['tracknumber']] = job['tracknumber']
             dsttags.save()
 
             os.rename(tmppath, dstpath)
@@ -73,21 +67,37 @@ def sync(src, dst):
         srcext = os.path.splitext(srcpath)[1]
         if not srcext in ['.flac', '.mp3']:
             continue
+
+        # read tags per file type
         if srcext == '.mp3':
             dstext = '.mp3'
             # ignore MP3 for now
             continue
         else:
             dstext = '.m4a'
+            srctags = mutagen.File(srcpath)
+            title = srctags.get('title')[0]
+            artist = srctags.get('artist')[0]
+            album = srctags.get('album')[0]
+            albumartist = srctags.get('albumartist', [''])[0]
+            date = srctags.get('date', [''])[0]
+            tracknumber = srctags.get('tracknumber')[0]
+
+        # Handle artist separately (the MP3 player doesn't support
+        # albumartist).
+        if not artist:
+            artist = albumartist
+        if not artist:
+            print('No artist:', job['dstrelpath'])
+            continue
+
         relpath = os.path.relpath(srcpath, srcdir)
-        srctags = mutagen.File(srcpath)
-        if 'title' not in srctags or 'tracknumber' not in srctags:
+        if not title or not tracknumber:
             print('Skip:', relpath)
             continue
-        tracknumber = srctags['tracknumber'][0]
         if '/' in tracknumber:
             tracknumber = tracknumber.split('/')[0]
-        filename = '%02d %s%s' % (int(tracknumber), srctags['title'][0], dstext)
+        filename = '%02d %s%s' % (int(tracknumber), title, dstext)
         filename = filename.replace('/', '~')
         filename = filename.replace('\\', '~')
         dstparent = os.path.join(dst, os.path.dirname(relpath))
@@ -99,7 +109,11 @@ def sync(src, dst):
                 'srcpath': srcpath,
                 'dstpath': dstpath,
                 'dstrelpath': dstrelpath,
-                'srctags': srctags,
+                'title': title,
+                'artist': artist,
+                'album': album,
+                'date': date,
+                'tracknumber': tracknumber,
             })
 
     # Wait until all jobs have finished processing.
