@@ -7,10 +7,9 @@ These are mostly meant for myself, but they might be useful for other people too
 ## Image
 
   * Install image as usual (using `xzcat` and `dd`).
-  * Copy over backed up home directory if needed (to a separate directory).
   * Create `ssh` file in bootfs.
   * Set up initial login, see [this answer](https://raspberrypi.stackexchange.com/a/137916/53905) (also see [here](https://www.raspberrypi.com/news/raspberry-pi-bullseye-update-april-2022/)).
-  * Change hostname: modify bootfs/hostname and bootfs/hosts.
+  * Change hostname: modify rootfs/etc/hostname and rootfs/etc/hosts.
   * Optional: configure wifi (if there is no ethernet).
   * Plug into Raspberry Pi and power on.
 
@@ -18,6 +17,9 @@ These are mostly meant for myself, but they might be useful for other people too
 
   * SSH to device (`ssh raspberrypi.local`)
   * Change password if needed.
+  * Copy over backed up home directory if needed (to a separate directory).
+    Do this after booting the first time (after the rootfs has been
+    expanded).
   * Create `/usr/local/bin/up`:
     ```sh
     #!/bin/sh
@@ -32,10 +34,13 @@ These are mostly meant for myself, but they might be useful for other people too
     ```
     sudo apt-get install byobu fish neovim git bat htop ripgrep exa picocom golang borgbackup
     ```
+  * Change shell to fish.
   * Configure a few things using raspi-config:
     * Switch to USB audio device.
     * Configure wifi
     * enable console auto-login
+    * set timezone
+  * Set `PasswordAuthentication no` in `/etc/ssh/sshd_config`
   * Allow pipewire to use high priority (to avoid stuttering):
     ```
     adduser $USER pipewire
@@ -76,10 +81,15 @@ These are mostly meant for myself, but they might be useful for other people too
     ```
     sudo adduser ayke docker
     ```
+  * Log out and back in again (to apply group change).
   * Run `docker-compose up -d` in the homeassistant directory.
 
 ## Cloud
 
+  * Install dependencies:
+    ```
+    sudo apt-get install python3-paho-mqtt python3-serial
+    ```
   * Create user unit file at ~/.config/systemd/user/cloud-control.service:
     ```
     [Unit]
