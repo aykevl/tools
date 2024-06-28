@@ -32,7 +32,7 @@ These are mostly meant for myself, but they might be useful for other people too
   * Install updates using `sudo up`.
   * Install basic tools:
     ```
-    sudo apt-get install byobu fish neovim git bat htop ripgrep exa picocom golang borgbackup
+    sudo apt-get install byobu fish neovim git bat htop ripgrep exa picocom golang borgbackup pipewire
     ```
   * Change shell to fish.
   * Configure a few things using raspi-config:
@@ -122,7 +122,7 @@ These are mostly meant for myself, but they might be useful for other people too
 
   * Install dependencies:
     ```
-    sudo apt-get install libasound2-dev libdbus-1-dev
+    sudo apt-get install libasound2-dev libdbus-1-dev libpulse-dev
     ```
   * Clone spotifyd repo
   * `cargo build --features pulseaudio_backend,dbus_mpris -j1 --release`
