@@ -8,13 +8,13 @@ switch (uname)
 end
 
 # ls-related aliases
-if test -e /bin/eza
-	alias exa="eza"
+if test -e /bin/exa
+	alias eza="exa"
 end
-alias ls="exa --group-directories-first"
-alias la="exa --group-directories-first -la"
-alias ll="exa --group-directories-first -l"
-alias tree="exa --group-directories-first --tree"
+alias ls="eza --group-directories-first"
+alias la="eza --group-directories-first -la"
+alias ll="eza --group-directories-first -l"
+alias tree="eza --group-directories-first --tree"
 
 # Compiler/binutils aliases
 alias avr-objdump="avr-objdump --no-show-raw-insn"
