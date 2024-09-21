@@ -20,5 +20,5 @@ export EDITOR=nvim
 
 # Launch byobu when logging in from a remote location.
 case "$(hostname)" in
-    raspi|raspberrypi|choco|ratana)  byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true ;;
+    raspi|raspberrypi|choco|ratana|pearl)  byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true ;;
 esac
