@@ -1,0 +1,98 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# don't put duplicate lines in the history. See bash(1) for more options
+# ... or force ignoredups and ignorespace
+HISTCONTROL=ignoredups:ignorespace
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# full PS1:
+#PS1='\[\033[1;38;5;77m\]\u\[\033[00m\]@\[\033[01;38;5;220m\]\h\[\033[00m\]:\[\033[05;38;5;39m\]\w\[\033[00m\]\$ '
+u='\[\033[1;38;5;77m\]\u\[\033[00m\]'
+host='\[\033[1;38;5;220m\]\h\[\033[00m\]'
+container="\033[1;38;5;208m$CONTAINER_ID\033[00m"
+w='\[\033[1;38;5;39m\]\w\[\033[00m\]'
+prefix=''
+if [ -n "$SSH_TTY" ]; then
+    # TODO: add container ID with different color
+    prefix="$host"
+elif [ -n "$CONTAINER_ID" ]; then
+    prefix="$container"
+fi
+if [ "$USER" != "ayke" ]; then
+    if [ "$prefix" = "" ]; then
+        set prefix "$user"
+    else
+        set prefix "$user@$prefix"
+    fi
+fi
+PS1="\n$prefix$w\$ "
+unset u
+unset host
+unset container
+unset w
+unset prefix
+
+
+# ls-related aliases
+if test -e /bin/eza; then
+	alias exa="eza"
+fi
+alias ls="exa --group-directories-first"
+alias la="exa --group-directories-first -la"
+alias ll="exa --group-directories-first -l"
+alias tree="exa --group-directories-first --tree"
+
+# Compiler/binutils aliases
+alias avr-objdump="avr-objdump --no-show-raw-insn"
+alias objdump="llvm-objdump --x86-asm-syntax=intel"
+alias readelf="llvm-readelf"
+alias lldb="lldb"
+
+# Cat/bat stuff
+if test -e /bin/batcat; then
+	# Debian uses batcat instead of bat
+	alias cat="batcat -pp --theme=ansi"
+else
+	alias cat="bat -pp --theme=ansi"
+fi
+
+# Misc aliases
+alias diff="delta --color-only --paging=never"
+alias df="df -h"
+alias du="du -h"
+alias egrep="egrep --color=auto"
+alias free="free -h"
+alias py=python3
+alias vim="nvim -p"
+alias rg='rg --sort-files'
+alias gg='git grep'
+alias top='htop'
+alias beep='aplay -q /usr/share/sounds/speech-dispatcher/pipe.wav'
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/ayke/lib/google-cloud-sdk/path.bash.inc' ]; then . '/home/ayke/lib/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/ayke/lib/google-cloud-sdk/completion.bash.inc' ]; then . '/home/ayke/lib/google-cloud-sdk/completion.bash.inc'; fi
+. "$HOME/.cargo/env"
+
+
+#
+#export WASMTIME_HOME="$HOME/.wasmtime"
+#
+#export PATH="$WASMTIME_HOME/bin:$PATH"
+#
+## Wasmer
+#export WASMER_DIR="/home/ayke/.wasmer"
+#[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
