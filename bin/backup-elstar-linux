@@ -14,16 +14,19 @@ echo '### backup'
 borg create --verbose --filter AME --stats --progress --compression auto,zstd \
     --exclude '*/.config/Code*' \
     --exclude '*/.config/chromium*' \
+    --exclude '*/.config/borg' \
     --exclude '*/tmp' \
     --exclude '*/llvm-project*' \
     --exclude '*/llvm-build*' \
     --exclude '*/tinygo/build' \
+    --exclude '*/ayke/activity/data' \
     --exclude '*/ayke/things/watch/InfiniTime' \
     --exclude '*/ayke/things/watch/wasp-os' \
     --exclude '*/ayke/things/watch/mynewt-blinky' \
     --exclude '*/mch2022-template-app*' \
     --exclude '*/playground/release.tar.gz' \
     ::"$host-{now}" \
+    /usr/local/bin/lockout \
     /home/ayke/.config \
     /home/ayke/Documents \
     /home/ayke/Pictures \

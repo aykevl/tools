@@ -43,7 +43,7 @@ These are mostly meant for myself, but they might be useful for other people too
   * Set `PasswordAuthentication no` in `/etc/ssh/sshd_config`
   * Allow pipewire to use high priority (to avoid stuttering):
     ```
-    adduser $USER pipewire
+    adduser $USER pipewire (doesn't work?)
     ```
   * Create daemon to correct audio on startup at ~/.config/systemd/user/alsa-volume.service:
     ```

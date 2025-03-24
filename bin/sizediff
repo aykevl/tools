@@ -15,8 +15,20 @@ class Comparison:
         self.bss1 = bss1
 
     @property
+    def flash0(self):
+        return self.code0 + self.data0
+
+    @property
+    def flash1(self):
+        return self.code1 + self.data1
+
+    @property
     def codediff(self):
         return self.code1 - self.code0
+
+    @property
+    def flashdiff(self):
+        return self.flash1 - self.flash0
 
 def readSizes(path):
     sizes = []
@@ -54,16 +66,16 @@ def main():
     if len(sizes0) < len(sizes1):
         print('%s has more commands than %s' % (path1, path0))
         print('   ', sizes1[len(sizes0)]['command'])
-    comparisons.sort(key=lambda x: x.codediff)
+    comparisons.sort(key=lambda x: x.flashdiff)
     totalCode0 = 0
     totalCode1 = 0
     totalDiff = 0
     print(' before   after   diff')
     for comparison in comparisons:
-        print('%7d %7d %6d %6.2f%%  %s' % (comparison.code0, comparison.code1, comparison.codediff, comparison.codediff / comparison.code0 * 100, comparison.command))
-        totalCode0 += comparison.code0
-        totalCode1 += comparison.code1
-        totalDiff += comparison.codediff
+        print('%7d %7d %6d %6.2f%%  %s' % (comparison.flash0, comparison.flash1, comparison.flashdiff, comparison.flashdiff / comparison.flash0 * 100, comparison.command))
+        totalCode0 += comparison.flash0
+        totalCode1 += comparison.flash1
+        totalDiff += comparison.flashdiff
     print('%7d %7d %6d %6.2f%%  sum' % (totalCode0, totalCode1, totalDiff, totalDiff / totalCode0 * 100))
 
 

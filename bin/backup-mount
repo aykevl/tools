@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+source ~/.config/borg-config.sh
+
+path="$HOME/tmp/borg"
+
+echo "mounting at $path"
+borg mount -f "$BORG_REPO" "$path"

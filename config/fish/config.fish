@@ -42,3 +42,4 @@ alias vim="nvim -p"
 alias rg='rg --sort-files'
 alias gg='git grep'
 alias top='htop'
+alias beep='aplay -q /usr/share/sounds/speech-dispatcher/pipe.wav'

@@ -10,8 +10,6 @@ import os
 import subprocess
 import sys
 import datetime
-import astral
-import astral.sun
 import re
 import time
 
@@ -32,19 +30,14 @@ def setTheme(theme):
     text = re.sub(r'DefaultProfile=[a-zA-Z]+.profile', 'DefaultProfile=%s.profile' % theme, text, count=1)
     open(os.path.expanduser('~/.config/konsolerc'), 'w').write(text)
 
-    deltaParams = ''
     if theme == 'Light':
-        deltaParams = '--light'
         subprocess.run(['lookandfeeltool', '-a', 'org.kde.breeze.desktop'])
     elif theme == 'Dark':
-        deltaParams = '--plus-style="syntax #005800" --minus-style="syntax #580000" --plus-emph-style="syntax #227722" --minus-emph-style="syntax #aa2222"'
         subprocess.run(['lookandfeeltool', '-a', 'org.kde.breezedark.desktop'])
     subprocess.run(['plasma-apply-cursortheme', 'Oxygen_White'])
     # The lookandfeeltool updates the plasma theme, while I want it to stay
     # breeze-alphablack. So update it manually.
     subprocess.run(['plasma-apply-desktoptheme', 'breeze-alphablack'])
-
-    open(os.path.expanduser('~/bin/delta'), 'w').write(delta_template % deltaParams)
 
 def currentTheme():
     config = configparser.ConfigParser()
@@ -56,11 +49,7 @@ def currentTheme():
 
 def isDark():
     now = datetime.datetime.now(datetime.datetime.now().astimezone().tzinfo)
-    city = astral.LocationInfo('Nijmegen', 'Nederland', 'Europe/Amsterdam')
-    s = astral.sun.sun(city.observer, date=now)
-    print('sunrise:', s['sunrise'])
-    print('sunset: ', s['sunset'])
-    return now < s['sunrise'] or now > s['sunset']
+    return now.time() >= datetime.time(21, 0) or now.time() <= datetime.time(7, 0)
 
 def scheduledTheme():
     if isDark():
