@@ -80,6 +80,9 @@ alias gg='git grep'
 alias top='htop'
 alias beep='aplay -q /usr/share/sounds/speech-dispatcher/pipe.wav'
 
+# Use vim mode
+set -o vi
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/ayke/lib/google-cloud-sdk/path.bash.inc' ]; then . '/home/ayke/lib/google-cloud-sdk/path.bash.inc'; fi
 
