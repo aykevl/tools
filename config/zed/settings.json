@@ -1,0 +1,60 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  // Save space
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false
+  },
+
+  // Editor
+  "vim_mode": true,
+  "ui_font_size": 18,
+  "buffer_font_size": 16,
+  "buffer_font_family": "Droid Sans Mono",
+  "soft_wrap": "editor_width",
+  "show_whitespaces": "boundary",
+  "git": {
+    "inline_blame": {
+      "enabled": false // don't distract with the author of a line of code
+    }
+  },
+
+  // Terminal.
+  "terminal": {
+    "dock": "right",
+    "shell": {
+      "program": "fish"
+    }
+  },
+
+  // Theme.
+  "theme": {
+    "mode": "system", // use system light/dark setting
+    "light": "One Light",
+    "dark": "One Dark"
+  },
+
+  // Language specific stuff.
+  "format_on_save": "off",
+  "languages": {
+    "Markdown": {
+      "hard_tabs": true,
+      "tab_size": 4
+    },
+    "HTML": {
+      "hard_tabs": true,
+      "tab_size": 2,
+      "remove_trailing_whitespace_on_save": false
+    },
+    "Go": {
+      "format_on_save": "on"
+    }
+  }
+}
