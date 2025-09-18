@@ -9,6 +9,7 @@ import threading
 import os
 import tempfile
 import mutagen
+import mutagen.easyid3
 import subprocess
 import shutil
 import multiprocessing
@@ -26,6 +27,8 @@ def convert_worker(q):
     while True:
         job = q.get()
         srcpath = job['srcpath']
+        dstpath = job['dstpath']
+        tmppath = dstpath + '.tmp'
         srcext = os.path.splitext(srcpath)[1]
         if srcext == '.flac':
             # Convert from FLAC to .wav, and then encode as AAC.
@@ -33,8 +36,6 @@ def convert_worker(q):
             # afconvert can't read a particular file but the reference flac
             # decoder can.
             print('Convert:', job['dstrelpath'])
-            dstpath = job['dstpath']
-            tmppath = dstpath + '.tmp'
             wavpath = tempfile.NamedTemporaryFile().name
             result = subprocess.run(['flac', '--decode', '--silent', '--force', '--output-name='+wavpath, srcpath])
             if result.returncode != 0:
@@ -58,10 +59,31 @@ def convert_worker(q):
             dsttags.save()
 
             os.rename(tmppath, dstpath)
-            q.task_done()
-        else:
+        elif srcext == '.mp3':
             print('Copy:   ', job['dstrelpath'])
-            q.task_done()
+
+            # Copy the data.
+            data = open(srcpath, 'rb').read()
+            f = open(tmppath, 'wb')
+            f.write(data)
+            f.close()
+
+            # copy tags
+            dsttags = mutagen.easyid3.EasyID3(tmppath)
+            dsttags['title'] = job['title']
+            dsttags['artist'] = job['artist']
+            dsttags['album'] = job['album']
+            if job['date']:
+                dsttags['date'] = job['date']
+            dsttags['tracknumber'] = job['tracknumber']
+            dsttags.save()
+
+            os.rename(tmppath, dstpath)
+
+        else:
+            print('TODO:   ', job['dstrelpath'])
+
+        q.task_done()
 
 
 def sync(src, dst):
@@ -81,17 +103,17 @@ def sync(src, dst):
         # read tags per file type
         if srcext == '.mp3':
             dstext = '.mp3'
-            # ignore MP3 for now
-            continue
+            srctags = mutagen.easyid3.EasyID3(srcpath)
         else:
             dstext = '.m4a'
             srctags = mutagen.File(srcpath)
-            title = srctags.get('title')[0]
-            artist = srctags.get('artist')[0]
-            album = srctags.get('album')[0]
-            albumartist = srctags.get('albumartist', [''])[0]
-            date = srctags.get('date', [''])[0]
-            tracknumber = srctags.get('tracknumber')[0]
+
+        title = srctags.get('title', [''])[0]
+        artist = srctags.get('artist')[0]
+        album = srctags.get('album')[0]
+        albumartist = srctags.get('albumartist', [''])[0]
+        date = srctags.get('date', [''])[0]
+        tracknumber = srctags.get('tracknumber', [''])[0]
 
         # Handle artist separately (the MP3 player doesn't support
         # albumartist).
