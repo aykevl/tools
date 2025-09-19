@@ -95,9 +95,12 @@ def sync(src, dst):
     print('syncing:', src, dst)
     srcdir = Path(src)
     pathlist = srcdir.glob('**/*.*')
-    for srcpath in pathlist:
+    for srcpath in sorted(pathlist):
         srcext = os.path.splitext(srcpath)[1]
         if not srcext in ['.flac', '.mp3']:
+            continue
+
+        if os.path.basename(srcpath).startswith('.'):
             continue
 
         # read tags per file type
@@ -109,8 +112,8 @@ def sync(src, dst):
             srctags = mutagen.File(srcpath)
 
         title = srctags.get('title', [''])[0]
-        artist = srctags.get('artist')[0]
-        album = srctags.get('album')[0]
+        artist = srctags.get('artist', [''])[0]
+        album = srctags.get('album', [''])[0]
         albumartist = srctags.get('albumartist', [''])[0]
         date = srctags.get('date', [''])[0]
         tracknumber = srctags.get('tracknumber', [''])[0]
@@ -120,12 +123,15 @@ def sync(src, dst):
         if not artist:
             artist = albumartist
         if not artist:
-            print('No artist:', job['dstrelpath'])
+            print('No artist:', relpath)
+            continue
+        if not album:
+            print('No album: ', relpath)
             continue
 
         relpath = os.path.relpath(srcpath, srcdir)
         if not title or not tracknumber:
-            print('Skip:', relpath)
+            print('Skip:   ', relpath)
             continue
         if '/' in tracknumber:
             tracknumber = tracknumber.split('/')[0]
