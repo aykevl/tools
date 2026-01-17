@@ -20,6 +20,10 @@
   programs.neovim.enable = true;
   programs.neovim.defaultEditor = true;
 
+  # Security
+  services.openssh.settings.PasswordAuthentication = false;
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+
   # Automatic updates
   system.autoUpgrade = {
     enable = true;
@@ -40,9 +44,6 @@
     extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = [''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEkqGExf0OKNa+Fzq09JRYQjelMK3CjkqUiQEtrnZAry ayke@elstar-linux'' ];
   };
-
-  # Firewall
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   # Web service
   services.nginx = {
