@@ -17,6 +17,8 @@
     tmux
     wget
   ];
+  programs.neovim.enable = true;
+  programs.neovim.defaultEditor = true;
 
   # Automatic updates
   system.autoUpgrade = {
