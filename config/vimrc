@@ -1,15 +1,11 @@
 set encoding=utf-8
 
-"unlet! skip_defaults_vim
-"source /usr/share/vim/vim91/defaults.vim
-
 " Disable mouse integration.
 set mouse=
 
 " Own key mappings
 nnoremap , :tabp<CR>
 nnoremap . :tabn<CR>
-"nnoremap <C-F11> :!make run<CR>
 
 " Tab completion (like bash)
 set wildmode=longest,list

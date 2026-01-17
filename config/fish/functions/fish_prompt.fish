@@ -7,7 +7,7 @@ function fish_prompt --description "Write out the prompt"
 	set -U fish_prompt_pwd_dir_length 0
 	set -l user "\033[1;38;5;77m$USER\033[00m"
 	set -l host "\033[1;38;5;220m$hostname\033[00m"
-	set -l container "\033[1;38;5;208m$CONTAINER_ID\033[00m"
+	set -l container "📦 \033[1;38;5;208m$CONTAINER_ID\033[00m"
 	set -l root "\033[31mroot\033[00m"
 	set -l pwd "\033[1;38;5;39m$(prompt_pwd)\033[00m"
 	set -l prefix ""

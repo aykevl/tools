@@ -20,7 +20,7 @@ HISTFILESIZE=2000
 #PS1='\[\033[1;38;5;77m\]\u\[\033[00m\]@\[\033[01;38;5;220m\]\h\[\033[00m\]:\[\033[05;38;5;39m\]\w\[\033[00m\]\$ '
 u='\[\033[1;38;5;77m\]\u\[\033[00m\]'
 host='\[\033[1;38;5;220m\]\h\[\033[00m\]'
-container="\033[1;38;5;208m$CONTAINER_ID\033[00m"
+container="📦 \033[1;38;5;208m$CONTAINER_ID\033[00m"
 w='\[\033[1;38;5;39m\]\w\[\033[00m\]'
 prefix=''
 if [ -n "$SSH_TTY" ]; then
@@ -99,3 +99,5 @@ if [ -f "$HOME/.cargo/env" ]; then . "$HOME/.cargo/env"; fi
 ## Wasmer
 #export WASMER_DIR="/home/ayke/.wasmer"
 #[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
+
+. "$HOME/.local/share/../bin/env"

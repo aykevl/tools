@@ -15,6 +15,7 @@ borg create --verbose --filter AME --stats --progress --compression auto,zstd \
     --exclude '*/.config/Code*' \
     --exclude '*/.config/chromium*' \
     --exclude '*/.config/borg' \
+    --exclude '*/.config/Signal*' \
     --exclude '*/tmp' \
     --exclude '*/llvm-project*' \
     --exclude '*/llvm-build*' \
@@ -25,6 +26,9 @@ borg create --verbose --filter AME --stats --progress --compression auto,zstd \
     --exclude '*/ayke/things/watch/mynewt-blinky' \
     --exclude '*/mch2022-template-app*' \
     --exclude '*/playground/release.tar.gz' \
+    --exclude '*/node_modules' \
+    --exclude '*/target/debug' \
+    --exclude '*/target/release' \
     ::"$host-{now}" \
     /usr/local/bin/lockout \
     /home/ayke/.config \
