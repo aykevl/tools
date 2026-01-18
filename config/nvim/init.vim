@@ -1,1 +1,45 @@
-../../.vimrc
+set encoding=utf-8
+
+" Disable mouse integration.
+set mouse=
+
+" Own key mappings
+nnoremap , :tabp<CR>
+nnoremap . :tabn<CR>
+
+" Tab completion (like bash)
+set wildmode=longest,list
+
+" make backspace work consistently across platforms
+set backspace=2
+
+" enable syntax. Everywhere.
+syntax on
+filetype plugin indent on
+filetype plugin on
+filetype on
+au BufRead,BufNewFile *.tpl setfiletype htmldjango
+au BufRead,BufNewFile *.ll setfiletype asm
+
+" default editor settings
+set tabstop=4
+set shiftwidth=4
+set noexpandtab
+
+" Highlight and line numbering (all filetypes)
+set number
+"highlight LineNr cterm=NONE ctermfg=Blue ctermbg=Black
+set cursorline
+"highlight CursorLineNR ctermfg=3 guibg=Grey90
+set ruler
+set hlsearch
+if $TERM != "linux"
+"highlight CursorLine cterm=NONE term=underline ctermbg=235 guibg=Grey90
+"highlight Visual term=reverse ctermbg=238 guibg=LightGrey
+set list
+set listchars=tab:»˙,trail:•
+endif
+
+" do not wait that long for escape key codes
+" http://www.johnhawthorn.com/2012/09/vi-escape-delays/
+set ttimeoutlen=1
