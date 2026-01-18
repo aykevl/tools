@@ -67,6 +67,10 @@
       locations."/".extraConfig = ''
         try_files /blog/$uri /blog/$uri/index.html $uri $uri/ =404;
       '';
+      locations."~ ^/apps/(visor/web|led-editor)/".extraConfig = ''
+        add_header Cross-Origin-Opener-Policy same-origin;
+        add_header Cross-Origin-Embedder-Policy require-corp;
+      '';
     };
   };
 
