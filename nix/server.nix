@@ -4,6 +4,7 @@
     bat
     byobu
     delta
+    dig
     eza
     fish
     git
