@@ -60,13 +60,16 @@
     certs."ruby.aykevl.nl" = {
       group = "tlsgroup";
       reloadServices = [ "nginx" "soju" ];
+      extraDomainNames = [ "photos.aykevl.nl" ];
     };
   };
 
   # Web service
   services.nginx = {
     enable = true;
+    recommendedProxySettings = true;
     virtualHosts."ruby.aykevl.nl" = {
+      default = true;
       enableACME = true;
       forceSSL = true;
       root = "/srv/aykevl.nl";
@@ -79,6 +82,28 @@
         add_header Cross-Origin-Embedder-Policy require-corp;
       '';
     };
+    virtualHosts."photos.aykevl.nl" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/".proxyPass = "http://localhost:2283/";
+    };
+  };
+
+  # Self hosted Google Photos alternative, yay :D
+  services.immich = {
+    enable = true;
+    port = 2283;
+    mediaLocation = "/mnt/storagebox/immich";
+  };
+  fileSystems."/mnt/storagebox" = {
+    device = "u534655@u534655.your-storagebox.de:/";
+    fsType = "fuse.sshfs";
+    options = [
+      "IdentityFile=/root/keys/storage-box"
+      "nodev"
+      "noatime"
+      "allow_other"
+    ];
   };
 
   # IRC
@@ -100,3 +125,10 @@
     };
   };
 }
+
+# Manually configured:
+# - initial setup
+# - /root/keys/storage-box
+# - soju account
+# - containers:
+#   - led-editor-builder
