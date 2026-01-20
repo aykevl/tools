@@ -1,4 +1,7 @@
 { config, pkgs, ... }: {
+  # System configuration
+  time.timeZone = "Europe/Amsterdam";
+
   # All installed packages
   environment.systemPackages = with pkgs; [
     bat
