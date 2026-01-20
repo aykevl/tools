@@ -90,6 +90,12 @@
       enableACME = true;
       forceSSL = true;
       locations."/".proxyPass = "http://localhost:2283/";
+      extraConfig = ''
+        client_max_body_size 50000M;
+        proxy_read_timeout   600s;
+        proxy_send_timeout   600s;
+        send_timeout         600s;
+      '';
     };
     virtualHosts."www.aykevl.nl" = {
       enableACME = true;
@@ -112,6 +118,7 @@
       "nodev"
       "noatime"
       "allow_other"
+      "reconnect"
     ];
   };
 
