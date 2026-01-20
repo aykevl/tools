@@ -57,10 +57,14 @@
   security.acme = {
     acceptTerms = true;
     defaults.email = "acme@aykevl.nl";
-    certs."ruby.aykevl.nl" = {
+    certs."aykevl.nl" = {
       group = "tlsgroup";
       reloadServices = [ "nginx" "soju" ];
-      extraDomainNames = [ "photos.aykevl.nl" ];
+      extraDomainNames = [
+        "photos.aykevl.nl"
+        "ruby.aykevl.nl"
+        "www.aykevl.nl"
+      ];
     };
   };
 
@@ -68,7 +72,7 @@
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
-    virtualHosts."ruby.aykevl.nl" = {
+    virtualHosts."aykevl.nl" = {
       default = true;
       enableACME = true;
       forceSSL = true;
@@ -86,6 +90,11 @@
       enableACME = true;
       forceSSL = true;
       locations."/".proxyPass = "http://localhost:2283/";
+    };
+    virtualHosts."www.aykevl.nl" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/".return = "301 https://aykevl.nl$request_uri";
     };
   };
 
@@ -110,9 +119,9 @@
   services.soju = {
     enable = true;
     adminSocket.enable = true;
-    tlsCertificateKey = "/var/lib/acme/ruby.aykevl.nl/key.pem";
-    tlsCertificate = "/var/lib/acme/ruby.aykevl.nl/fullchain.pem";
-    hostName = "ruby.aykevl.nl";
+    tlsCertificateKey = "/var/lib/acme/aykevl.nl/key.pem";
+    tlsCertificate = "/var/lib/acme/aykevl.nl/fullchain.pem";
+    hostName = "aykevl.nl";
   };
 
   # Allow users to run Docker (this should be more secure than running Docker
