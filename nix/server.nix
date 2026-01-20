@@ -29,9 +29,6 @@
   # Automatic updates
   system.autoUpgrade = {
     enable = true;
-    flags = [
-      "--print-build-logs"
-    ];
     dates = "04:00";
     randomizedDelaySec = "45min";
     allowReboot = true;
