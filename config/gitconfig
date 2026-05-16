@@ -9,5 +9,6 @@
         default = simple
 [core]
         excludesfile = ~/src/dotfiles/gitignore
+        editor = nvim
 [merge]
         conflictstyle = diff3
