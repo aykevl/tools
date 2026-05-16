@@ -37,6 +37,17 @@
     allowReboot = true;
   };
 
+  # Don't waste too much storage (especially due to automatic updates).
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+  nix.optimise = {
+    automatic = true;
+    dates = "weekly";
+  };
+
   # User management
   programs.fish.enable = true;
   users.users.maaike = {
