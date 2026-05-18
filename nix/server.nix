@@ -167,6 +167,7 @@
   # https://git.catgirl.cloud/999eagle/dotfiles-nix/-/blob/9953d806b33c2967432e45d1a917aa9021289512/modules/system/server/traccar.nix
   services.traccar = {
     enable = true;
+    environmentFile = ./secrets/traccar.env;
     settings = {
       web = {
         url = "https://track.aykevl.nl/";
@@ -174,6 +175,12 @@
         port = "8082";
       };
       protocols.enable = "teltonika,osmand";
+      database = {
+        driver = "org.postgresql.Driver";
+        url = "jdbc:postgresql:traccar";
+        user = "traccar";
+        password = "$TRACCAR_DB_PASSWORD";
+      };
     };
   };
   services.nginx.virtualHosts."track.aykevl.nl" = {
@@ -215,5 +222,10 @@
 # - soju account
 # - containers:
 #   - led-editor-builder
+# - Traccar DB setup:
+#   $ sudo -u postgres psql
+#   postgres=# CREATE USER traccar WITH PASSWORD 'VERYSECRET'; -- change the password first!
+#   postgres=# CREATE DATABASE traccar WITH OWNER=traccar;
+# - put password in secrets/traccar.env
 # - Traccar first account
 # - /home/minecraft/data contents
