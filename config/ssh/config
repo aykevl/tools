@@ -2,6 +2,10 @@ Host pearl
 HostName pearl.aykevl.nl
 User ayke
 
+Host ruby
+HostName ruby.aykevl.nl
+User maaike
+
 # Private VPN
 
 Host raspi-vpn
