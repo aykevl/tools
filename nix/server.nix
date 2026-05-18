@@ -27,7 +27,11 @@
 
   # Security
   services.openssh.settings.PasswordAuthentication = false;
-  networking.firewall.allowedTCPPorts = [ 80 443 6697 ];
+  networking.firewall.allowedTCPPorts = [
+    80 443 # web server
+    6697   # IRC
+    25565  # Minecraft
+  ];
 
   # Automatic updates
   system.autoUpgrade = {
@@ -178,6 +182,24 @@
       '';
     };
   };
+
+  # Minecraft
+  programs.java.enable = true;
+  users.users.minecraft = {
+    isNormalUser = true;
+    home = "/home/minecraft";
+  };
+  systemd.services.minecraft_custom = {
+    description = "Minecraft";
+    after = [ "network.target" ];
+    serviceConfig = {
+      User = "minecraft";
+      Group = "users";
+      ExecStart = "/run/current-system/sw/bin/java -Xmx1024M -Xms1024M -jar minecraft-server-1.21.5.jar nogui";
+      WorkingDirectory = "/home/minecraft/data";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
 }
 
 # Manually configured:
@@ -188,3 +210,4 @@
 # - containers:
 #   - led-editor-builder
 # - Traccar first account
+# - /home/minecraft/data contents
