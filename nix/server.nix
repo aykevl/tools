@@ -83,6 +83,12 @@
     };
   };
 
+  # Postgres
+  services.postgresqlBackup = {
+    enable = true;
+    location = "/mnt/storagebox/postgresql-backup";
+  };
+
   # Web service
   services.nginx = {
     enable = true;
