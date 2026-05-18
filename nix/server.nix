@@ -151,6 +151,33 @@
       setSocketVariable = true;
     };
   };
+
+  # Traccar
+  # Also see:
+  # https://git.catgirl.cloud/999eagle/dotfiles-nix/-/blob/9953d806b33c2967432e45d1a917aa9021289512/modules/system/server/traccar.nix
+  services.traccar = {
+    enable = true;
+    settings = {
+      web = {
+        url = "https://track.aykevl.nl/";
+        address = "127.0.0.1";
+        port = "8082";
+      };
+      protocols.enable = "teltonika,osmand";
+    };
+  };
+  services.nginx.virtualHosts."track.aykevl.nl" = {
+    enableACME = true;
+    forceSSL = true;
+    locations."/" = {
+      proxyPass = "http://localhost:8082";
+      recommendedProxySettings = true;
+      extraConfig = ''
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+      '';
+    };
+  };
 }
 
 # Manually configured:
@@ -159,3 +186,4 @@
 # - soju account
 # - containers:
 #   - led-editor-builder
+# - Traccar first account
