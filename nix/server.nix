@@ -10,6 +10,7 @@
     dig
     docker-compose
     eza
+    file
     fish
     git
     htop
