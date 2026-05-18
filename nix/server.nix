@@ -181,7 +181,8 @@
 }
 
 # Manually configured:
-# - initial setup
+# - initial setup (NixOS infect etc)
+# - /srv/aykevl.nl webroot (blog etc)
 # - /root/keys/storage-box
 # - soju account
 # - containers:
