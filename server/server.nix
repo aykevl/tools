@@ -242,3 +242,7 @@
 # - put password in secrets/traccar.env
 # - Traccar first account
 # - /home/minecraft/data contents
+# - Seafile:
+#   - `docker-compose up -d` (once)
+#   - /mnt/storagebox/seafile-data
+#   - /home/maaike/seafile
