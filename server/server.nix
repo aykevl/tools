@@ -19,6 +19,7 @@
     optipng
     pwgen
     ripgrep
+    syncthing
     tig
     tmux
     wget
@@ -226,6 +227,9 @@
       recommendedProxySettings = true;
     };
   };
+
+  # Make Syncthing available on the network
+  services.nginx.virtualHosts."aykevl.nl".locations."^~ /syncthing/".proxyPass = "http://localhost:8384/";
 }
 
 # Manually configured:
@@ -246,3 +250,6 @@
 #   - `docker-compose up -d` (once)
 #   - /mnt/storagebox/seafile-data
 #   - /home/maaike/seafile
+# - Syncthing:
+#   - enable user daemon
+#   - connect all other devices
