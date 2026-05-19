@@ -1,0 +1,92 @@
+# Seafile compose file, based on the following:
+# https://manual.seafile.com/13.0/repo/docker/ce/seafile-server.yml
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: seafile-mysql
+    restart: unless-stopped
+    env_file: secrets.env
+    environment:
+      - MYSQL_LOG_CONSOLE=true
+      - MARIADB_AUTO_UPGRADE=1
+    volumes:
+      - /home/maaike/seafile/mysql:/var/lib/mysql
+    networks:
+      - seafile-net
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/usr/local/bin/healthcheck.sh",
+          "--connect",
+          "--mariadbupgrade",
+          "--innodb_initialized",
+        ]
+      interval: 20s
+      start_period: 30s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis
+    container_name: seafile-redis
+    restart: unless-stopped
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$$REDIS_PASSWORD"
+    env_file: secrets.env
+    networks:
+      - seafile-net
+
+  seafile:
+    image: seafileltd/seafile-mc:13.0-latest
+    container_name: seafile
+    restart: unless-stopped
+    ports:
+      - "8043:80"
+      - "8082:8082"
+    volumes:
+      # if chown fails, make sure to create the directory first
+      - /mnt/storagebox/seafile-data:/shared
+    env_file: secrets.env
+    environment:
+      - SEAFILE_MYSQL_DB_HOST=db
+      - SEAFILE_MYSQL_DB_PORT=3306
+      - SEAFILE_MYSQL_DB_USER=seafile
+      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=ccnet_db
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=seafile_db
+      - SEAFILE_MYSQL_DB_SEAHUB_DB_NAME=seahub_db
+      - TIME_ZONE=Etc/UTC
+      - SEAFILE_SERVER_HOSTNAME=files.aykevl.nl
+      - SEAFILE_SERVER_PROTOCOL=http
+      - SITE_ROOT=/
+      - NON_ROOT=false
+      - SEAFILE_LOG_TO_STDOUT=false
+      - ENABLE_GO_FILESERVER=true
+      - ENABLE_SEADOC=false
+      - CACHE_PROVIDER=redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ENABLE_NOTIFICATION_SERVER=false
+      - ENABLE_SEAFILE_AI=false
+      - ENABLE_FACE_RECOGNITION=false
+      - MD_FILE_COUNT_LIMIT=100000
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - seafile-net
+
+networks:
+  seafile-net:
+    name: seafile-net

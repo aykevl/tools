@@ -32,6 +32,7 @@
     80 443 # web server
     6697   # IRC
     25565  # Minecraft
+    8082   # Seafile
   ];
 
   # Automatic updates
@@ -126,6 +127,7 @@
     fsType = "fuse.sshfs";
     options = [
       "IdentityFile=/root/keys/storage-box"
+      "uid=1000"
       "nodev"
       "noatime"
       "allow_other"
@@ -173,7 +175,7 @@
       web = {
         url = "https://track.aykevl.nl/";
         address = "127.0.0.1";
-        port = "8082";
+        port = "3082";
       };
       protocols.enable = "teltonika,osmand";
       database = {
@@ -188,7 +190,7 @@
     enableACME = true;
     forceSSL = true;
     locations."/" = {
-      proxyPass = "http://localhost:8082";
+      proxyPass = "http://localhost:3082";
       recommendedProxySettings = true;
       extraConfig = ''
         proxy_set_header Upgrade $http_upgrade;
@@ -213,6 +215,16 @@
       WorkingDirectory = "/home/minecraft/data";
     };
     wantedBy = [ "multi-user.target" ];
+  };
+
+  # Seafile file syncing
+  services.nginx.virtualHosts."files.aykevl.nl" = {
+    enableACME = true;
+    forceSSL = true;
+    locations."/" = {
+      proxyPass = "http://localhost:8043";
+      recommendedProxySettings = true;
+    };
   };
 }
 
