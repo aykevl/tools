@@ -87,6 +87,9 @@
   };
 
   # Postgres
+  services.postgresql = {
+    enable = true;
+  };
   services.postgresqlBackup = {
     enable = true;
     location = "/mnt/storagebox/postgresql-backup";
@@ -117,11 +120,10 @@
     };
   };
 
-  # Self hosted Google Photos alternative, yay :D
-  services.immich = {
-    enable = true;
-    port = 2283;
-    mediaLocation = "/mnt/storagebox/immich";
+  # Hetzner storage box
+  users.groups.storagebox = {
+    gid = 1000;
+    members = [ "maaike" ];
   };
   fileSystems."/mnt/storagebox" = {
     device = "u534655@u534655.your-storagebox.de:/";
@@ -129,23 +131,32 @@
     options = [
       "IdentityFile=/root/keys/storage-box"
       "uid=1000"
+      "gid=1000"
       "nodev"
       "noatime"
       "allow_other"
+      "default_permissions"
       "reconnect"
     ];
   };
-  services.nginx.virtualHosts."photos.aykevl.nl" = {
-    enableACME = true;
-    forceSSL = true;
-    locations."/".proxyPass = "http://localhost:2283/";
-    extraConfig = ''
-      client_max_body_size 50000M;
-      proxy_read_timeout   600s;
-      proxy_send_timeout   600s;
-      send_timeout         600s;
-    '';
-  };
+
+  # Self hosted Google Photos alternative, yay :D
+  #services.immich = {
+  #  enable = true;
+  #  port = 2283;
+  #  mediaLocation = "/mnt/storagebox/immich";
+  #};
+  #services.nginx.virtualHosts."photos.aykevl.nl" = {
+  #  enableACME = true;
+  #  forceSSL = true;
+  #  locations."/".proxyPass = "http://localhost:2283/";
+  #  extraConfig = ''
+  #    client_max_body_size 50000M;
+  #    proxy_read_timeout   600s;
+  #    proxy_send_timeout   600s;
+  #    send_timeout         600s;
+  #  '';
+  #};
 
   # IRC
   services.soju = {
