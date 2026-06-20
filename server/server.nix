@@ -32,7 +32,7 @@
   networking.firewall.allowedTCPPorts = [
     80 443 # web server
     6697   # IRC
-    25565  # Minecraft
+    31389  # Minecraft
     8082   # Seafile
   ];
 
@@ -212,21 +212,11 @@
   };
 
   # Minecraft
-  programs.java.enable = true;
-  users.users.minecraft = {
-    isNormalUser = true;
-    home = "/home/minecraft";
-  };
-  systemd.services.minecraft_custom = {
-    description = "Minecraft";
-    after = [ "network.target" ];
-    serviceConfig = {
-      User = "minecraft";
-      Group = "users";
-      ExecStart = "/run/current-system/sw/bin/java -Xmx1024M -Xms1024M -jar minecraft-server-1.21.5.jar nogui";
-      WorkingDirectory = "/home/minecraft/data";
-    };
-    wantedBy = [ "multi-user.target" ];
+  services.minecraft-server = {
+    enable = true;
+    eula = true;
+    openFirewall = true;
+    jvmOpts = "-Xmx1024M -Xms1024M";
   };
 
   # Seafile file syncing
