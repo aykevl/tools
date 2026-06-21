@@ -33,6 +33,7 @@
     80 443 # web server
     6697   # IRC
     31389  # Minecraft
+    24454  # Minecraft voice chat
     8082   # Seafile
   ];
 
@@ -212,11 +213,68 @@
   };
 
   # Minecraft
-  services.minecraft-server = {
-    enable = true;
-    eula = true;
-    openFirewall = true;
-    jvmOpts = "-Xmx1024M -Xms1024M";
+  # This configuration has mostly been copied from the official Minecraft
+  # server in nixpkgs, but used with some modifications to be able to use
+  # Fabric instead.
+  programs.java.enable = true;
+  programs.java.package = pkgs.jdk25;
+  users.users.minecraft = {
+    isNormalUser = true;
+    home = "/home/minecraft";
+  };
+  systemd.sockets.minecraft_custom = {
+    bindsTo = [ "minecraft_custom.service" ];
+    socketConfig = {
+      ListenFIFO = "/run/minecraft_custom.stdin";
+      SocketMode = "0600";
+      SocketUser = "minecraft";
+      SocketGroup = "users";
+      RemoveOnStop = true;
+      FlushPending = true;
+    };
+  };
+  systemd.services.minecraft_custom = {
+    description = "Minecraft";
+    after = [
+      "network.target"
+      "minecraft_custom.socket"
+    ];
+    requires = [ "minecraft_custom.socket" ];
+    serviceConfig = {
+      User = "minecraft";
+      Group = "users";
+      ExecStart = "/run/current-system/sw/bin/java -Xmx1024M -jar ../fabric-server-mc.26.2-loader.0.19.3-launcher.1.1.1.jar nogui";
+      WorkingDirectory = "/home/minecraft/data";
+      StandardInput = "socket";
+      StandardOutput = "journal";
+      StandardError = "journal";
+
+      # Hardening
+      CapabilityBoundingSet = [ "" ];
+      DeviceAllow = [ "" ];
+      LockPersonality = true;
+      PrivateDevices = true;
+      PrivateTmp = true;
+      PrivateUsers = true;
+      ProtectClock = true;
+      ProtectControlGroups = true;
+      #ProtectHome = true; # must be false to be able to access /home/minecraft
+      ProtectHostname = true;
+      ProtectKernelLogs = true;
+      ProtectKernelModules = true;
+      ProtectKernelTunables = true;
+      ProtectProc = "invisible";
+      RestrictAddressFamilies = [
+        "AF_INET"
+        "AF_INET6"
+      ];
+      RestrictNamespaces = true;
+      RestrictRealtime = true;
+      RestrictSUIDSGID = true;
+      SystemCallArchitectures = "native";
+      UMask = "0077";
+    };
+    wantedBy = [ "multi-user.target" ];
   };
 
   # Seafile file syncing
