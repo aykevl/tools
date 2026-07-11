@@ -1,3 +1,4 @@
 /server/secrets
 secrets.env
 /config/fish/fish_variables
+/config/fish/fishd.tmp.*
