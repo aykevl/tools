@@ -32,7 +32,7 @@ These are mostly meant for myself, but they might be useful for other people too
   * Install updates using `sudo up`.
   * Install basic tools:
     ```
-    sudo apt-get install byobu fish neovim git bat htop ripgrep exa picocom golang borgbackup pipewire
+    sudo apt-get install byobu fish neovim git bat htop ripgrep exa picocom golang borgbackup pipewire pipewire-alsa bind9-dnsutils llvm
     ```
   * Change shell to fish.
   * Configure a few things using raspi-config:
@@ -41,6 +41,10 @@ These are mostly meant for myself, but they might be useful for other people too
     * enable console auto-login
     * set timezone
   * Set `PasswordAuthentication no` in `/etc/ssh/sshd_config`
+  * Set default editor to neovim:
+    ```
+    sudo update-alternatives --config editor
+    ```
   * Allow pipewire to use high priority (to avoid stuttering):
     ```
     adduser $USER pipewire (doesn't work?)
@@ -83,6 +87,10 @@ These are mostly meant for myself, but they might be useful for other people too
     ```
   * Log out and back in again (to apply group change).
   * Run `docker-compose up -d` in the homeassistant directory.
+  * Make sure backups are regularly pruned using a crontab (root):
+    ```
+    0 5 * * * find /home/ayke/homeassistant/data/core/backups/*.tar -mtime +7 -delete
+    ```
 
 ## Cloud
 
@@ -149,7 +157,7 @@ These are mostly meant for myself, but they might be useful for other people too
 
   * Install dependencies:
     ```
-    sudo apt-get install default-jre-headless
+    sudo apt-get install default-jre-headless:armhf
     ```
   * Create the following file at `/etc/systemd/system/librespot-java.service`:
     ```

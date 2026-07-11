@@ -8,6 +8,7 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 import subprocess
+import time
 from gi.repository import GLib
 
 BUS_NAME = 'org.bluez'
@@ -55,6 +56,11 @@ class Agent(dbus.service.Object):
 
 
 if __name__ == '__main__':
+    # Set audio volume to 100%.
+    # This needs a little startup delay.
+    time.sleep(10)
+    subprocess.run(['amixer', 'set', 'PCM', '100%'])
+
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 
     bus = dbus.SystemBus()
@@ -81,9 +87,5 @@ if __name__ == '__main__':
     print("Agent registered")
 
     manager.RequestDefaultAgent(AGENT_PATH)
-
-    # Set audio volume to 100%.
-    # This doesn't seem to work?
-    subprocess.run(['amixer', 'set', 'PCM', '100%'])
 
     mainloop.run()
