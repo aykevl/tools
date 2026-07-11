@@ -1,2 +1,3 @@
 /server/secrets
 secrets.env
+/config/fish/fish_variables
