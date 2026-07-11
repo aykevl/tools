@@ -2,7 +2,8 @@
 
 # this script is run as an init command in the "Advanced SSH & Web Terminal" app in Home Assistant.
 
-set -e
+# Don't exit due to an invalid command, it prevents the HA app from starting.
+#set -e
 
 time apk add fish git htop eza moreutils py3-pyserial py3-paho-mqtt # byobu musl-locales
 
