@@ -26,8 +26,12 @@ alias lldb="lldb"
 if test -e /bin/batcat
 	# Debian uses batcat instead of bat
 	alias cat="batcat -pp --theme=ansi"
-else
+else if test -e /usr/bin/bat
 	alias cat="bat -pp --theme=ansi"
+end
+
+if test -e /usr/bin/nvim
+	alias vim="nvim"
 end
 
 # Misc aliases
@@ -37,8 +41,8 @@ alias du="du -h"
 alias egrep="egrep --color=auto"
 alias free="free -h"
 alias py=python3
-alias vi="nvim -p"
-alias vim="nvim -p"
+alias vi="vim -p"
+alias vim="vim -p"
 alias rg='rg --sort-files'
 alias gg='git grep'
 alias top='htop'
