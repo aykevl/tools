@@ -38,7 +38,7 @@ def convert_worker(q):
             # decoder can.
             print('Convert:  ', job['dstrelpath'])
             decodedpath = tempfile.NamedTemporaryFile().name
-            result = subprocess.run(['flac', '--decode', '--silent', '--force', '--output-name='+decodedpath, srcpath])
+            result = subprocess.run(['flac', '--decode', '--silent', '--decode-through-errors', '--output-name='+decodedpath, srcpath])
             if result.returncode != 0:
                 print('Fail decode:', job['dstrelpath'])
                 q.task_done()
