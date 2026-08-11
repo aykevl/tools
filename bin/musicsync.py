@@ -36,15 +36,10 @@ def convert_worker(q):
             # afconvert can't read a particular file but the reference flac
             # decoder can.
             print('Convert:  ', job['dstrelpath'])
-            wavpath = tempfile.NamedTemporaryFile().name
-            result = subprocess.run(['flac', '--decode', '--silent', '--force', '--output-name='+wavpath, srcpath])
+            decodedpath = tempfile.NamedTemporaryFile().name
+            result = subprocess.run(['flac', '--decode', '--silent', '--force', '--output-name='+decodedpath, srcpath])
             if result.returncode != 0:
                 print('Fail decode:', job['dstrelpath'])
-                q.task_done()
-                continue
-            result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', wavpath, tmppath])
-            if result.returncode != 0:
-                print('Fail encode:', job['dstrelpath'])
                 q.task_done()
                 continue
         elif srcext == '.mp3':
@@ -56,14 +51,15 @@ def convert_worker(q):
                 print('Fail decode:', job['dstrelpath'])
                 q.task_done()
                 continue
-
-            result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', decodedpath, tmppath])
-            if result.returncode != 0:
-                print('Fail encode:', job['dstrelpath'])
-                q.task_done()
-                continue
         else:
             print('TODO:     ', job['dstrelpath'])
+
+        # Encode the file with AAC.
+        result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', decodedpath, tmppath])
+        if result.returncode != 0:
+            print('Fail encode:', job['dstrelpath'])
+            q.task_done()
+            continue
 
         # copy tags
         dsttags = mutagen.File(tmppath)
