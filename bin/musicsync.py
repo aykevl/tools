@@ -35,7 +35,7 @@ def convert_worker(q):
             # The .wav intermediary format may be needed in some cases when
             # afconvert can't read a particular file but the reference flac
             # decoder can.
-            print('Convert:', job['dstrelpath'])
+            print('Convert:  ', job['dstrelpath'])
             wavpath = tempfile.NamedTemporaryFile().name
             result = subprocess.run(['flac', '--decode', '--silent', '--force', '--output-name='+wavpath, srcpath])
             if result.returncode != 0:
@@ -60,28 +60,35 @@ def convert_worker(q):
 
             os.rename(tmppath, dstpath)
         elif srcext == '.mp3':
-            print('Copy:   ', job['dstrelpath'])
+            print('Transcode:', job['dstrelpath'])
 
-            # Copy the data.
-            data = open(srcpath, 'rb').read()
-            f = open(tmppath, 'wb')
-            f.write(data)
-            f.close()
+            decodedpath = tempfile.NamedTemporaryFile().name
+            result = subprocess.run(['afconvert', '--file', 'flac', srcpath, decodedpath])
+            if result.returncode != 0:
+                print('Fail decode:', job['dstrelpath'])
+                q.task_done()
+                continue
+
+            result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', decodedpath, tmppath])
+            if result.returncode != 0:
+                print('Fail encode:', job['dstrelpath'])
+                q.task_done()
+                continue
 
             # copy tags
-            dsttags = mutagen.easyid3.EasyID3(tmppath)
-            dsttags['title'] = job['title']
-            dsttags['artist'] = job['artist']
-            dsttags['album'] = job['album']
+            dsttags = mutagen.File(tmppath)
+            dsttags[tagMap['title']] = job['title']
+            dsttags[tagMap['artist']] = job['artist']
+            dsttags[tagMap['album']] = job['album']
             if job['date']:
-                dsttags['date'] = job['date']
-            dsttags['tracknumber'] = job['tracknumber']
+                dsttags[tagMap['date']] = job['date']
+            dsttags[tagMap['tracknumber']] = job['tracknumber']
             dsttags.save()
 
             os.rename(tmppath, dstpath)
 
         else:
-            print('TODO:   ', job['dstrelpath'])
+            print('TODO:     ', job['dstrelpath'])
 
         q.task_done()
 
@@ -92,9 +99,10 @@ def sync(src, dst):
         t = threading.Thread(target=convert_worker, args=(q,), daemon=True)
         t.start()
 
-    print('syncing:', src, dst)
+    print('getting file list:', src, dst)
     srcdir = Path(src)
     pathlist = srcdir.glob('**/*.*')
+    print('syncing...')
     for srcpath in sorted(pathlist):
         srcext = os.path.splitext(srcpath)[1]
         if not srcext in ['.flac', '.mp3']:
@@ -105,7 +113,7 @@ def sync(src, dst):
 
         # read tags per file type
         if srcext == '.mp3':
-            dstext = '.mp3'
+            dstext = '.m4a'
             srctags = mutagen.easyid3.EasyID3(srcpath)
         else:
             dstext = '.m4a'
@@ -131,7 +139,7 @@ def sync(src, dst):
 
         relpath = os.path.relpath(srcpath, srcdir)
         if not title or not tracknumber:
-            print('Skip:   ', relpath)
+            print('Skip:     ', relpath)
             continue
         if '/' in tracknumber:
             tracknumber = tracknumber.split('/')[0]
