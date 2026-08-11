@@ -7,6 +7,7 @@ import sys
 import queue
 import threading
 import os
+import stat
 import tempfile
 import mutagen
 import mutagen.easyid3
@@ -94,6 +95,7 @@ def sync(src, dst):
     srcdir = Path(src)
     pathlist = srcdir.glob('**/*.*')
     print('syncing...')
+    seenfiles = set()
     for srcpath in sorted(pathlist):
         srcext = os.path.splitext(srcpath)[1]
         if not srcext in ['.flac', '.mp3']:
@@ -151,6 +153,7 @@ def sync(src, dst):
         dstparent = os.path.join(dst, os.path.dirname(relpath))
         dstpath = os.path.join(dstparent, filename)
         dstrelpath = os.path.relpath(dstpath, dst)
+        seenfiles.add(dstrelpath)
         if not os.path.exists(dstpath):
             os.makedirs(dstparent, exist_ok=True)
             q.put({
@@ -166,6 +169,29 @@ def sync(src, dst):
 
     # Wait until all jobs have finished processing.
     q.join()
+
+    # Scan all files on the destination, see which ones don't exist in the
+    # source.
+    print('\n=================')
+    print('checking for to-remove files...')
+    dstpaths = Path(dst).glob('**/*.*')
+    toremove = []
+    totalsize = 0
+    for dstpath in sorted(dstpaths):
+        relpath = os.path.relpath(dstpath, dst)
+        if relpath in seenfiles:
+            continue
+        st = os.stat(dstpath)
+        if stat.S_ISDIR(st.st_mode):
+            continue
+        totalsize += st.st_size
+        print('Remove:', relpath)
+        toremove.append(dstpath)
+
+    if toremove and input('Remove all these? (%.1fMB) ' % (totalsize / 1024 / 1024)).lower() in {'yes', 'y'}:
+        for path in toremove:
+            os.remove(path)
+
 
 if __name__ == '__main__':
     sync(sys.argv[1], sys.argv[2])
