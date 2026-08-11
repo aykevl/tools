@@ -46,7 +46,8 @@
   "languages": {
     "Markdown": {
       "hard_tabs": true,
-      "tab_size": 4
+      "tab_size": 4,
+      "remove_trailing_whitespace_on_save": false
     },
     "HTML": {
       "hard_tabs": true,
