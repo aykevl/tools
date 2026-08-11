@@ -19,4 +19,4 @@ User ayke
 
 Host raspi
 HostName 10.65.42.112
-User ayke
+User root
