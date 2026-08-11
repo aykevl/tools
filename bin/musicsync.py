@@ -61,7 +61,7 @@ def convert_worker(q):
             command = ['fdkaac', '--bitrate-mode=3', '--silent', '-o', tmppath, decodedpath]
         result = subprocess.run(command)
         if result.returncode != 0:
-            print('Fail encode:', job['dstrelpath'])
+            print('Fail encode:', command)
             q.task_done()
             continue
 
@@ -144,6 +144,7 @@ def sync(src, dst):
         filename = '%02d %s%s' % (int(tracknumber), title, dstext)
         filename = filename.replace('/', '~')
         filename = filename.replace('\\', '~')
+        filename = filename.replace(':', '~')
         dstparent = os.path.join(dst, os.path.dirname(relpath))
         dstpath = os.path.join(dstparent, filename)
         dstrelpath = os.path.relpath(dstpath, dst)
