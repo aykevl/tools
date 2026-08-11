@@ -129,10 +129,11 @@ def sync(src, dst):
         if not album:
             print('No album: ', relpath)
             continue
-
-        relpath = os.path.relpath(srcpath, srcdir)
-        if not title or not tracknumber:
-            print('Skip:     ', relpath)
+        if not title:
+            print('No title: ', relpath)
+            continue
+        if not tracknumber:
+            print('No track: ', relpath)
             continue
         if '/' in tracknumber:
             tracknumber = tracknumber.split('/')[0]
