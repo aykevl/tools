@@ -47,18 +47,6 @@ def convert_worker(q):
                 print('Fail encode:', job['dstrelpath'])
                 q.task_done()
                 continue
-
-            # copy tags
-            dsttags = mutagen.File(tmppath)
-            dsttags[tagMap['title']] = job['title']
-            dsttags[tagMap['artist']] = job['artist']
-            dsttags[tagMap['album']] = job['album']
-            if job['date']:
-                dsttags[tagMap['date']] = job['date']
-            dsttags[tagMap['tracknumber']] = job['tracknumber']
-            dsttags.save()
-
-            os.rename(tmppath, dstpath)
         elif srcext == '.mp3':
             print('Transcode:', job['dstrelpath'])
 
@@ -74,21 +62,20 @@ def convert_worker(q):
                 print('Fail encode:', job['dstrelpath'])
                 q.task_done()
                 continue
-
-            # copy tags
-            dsttags = mutagen.File(tmppath)
-            dsttags[tagMap['title']] = job['title']
-            dsttags[tagMap['artist']] = job['artist']
-            dsttags[tagMap['album']] = job['album']
-            if job['date']:
-                dsttags[tagMap['date']] = job['date']
-            dsttags[tagMap['tracknumber']] = job['tracknumber']
-            dsttags.save()
-
-            os.rename(tmppath, dstpath)
-
         else:
             print('TODO:     ', job['dstrelpath'])
+
+        # copy tags
+        dsttags = mutagen.File(tmppath)
+        dsttags[tagMap['title']] = job['title']
+        dsttags[tagMap['artist']] = job['artist']
+        dsttags[tagMap['album']] = job['album']
+        if job['date']:
+            dsttags[tagMap['date']] = job['date']
+        dsttags[tagMap['tracknumber']] = job['tracknumber']
+        dsttags.save()
+
+        os.rename(tmppath, dstpath)
 
         q.task_done()
 
