@@ -11,8 +11,8 @@ import tempfile
 import mutagen
 import mutagen.easyid3
 import subprocess
-import shutil
 import multiprocessing
+import platform
 
 tagMap = {
     'title': '\xa9nam',
@@ -46,7 +46,7 @@ def convert_worker(q):
             print('Transcode:', job['dstrelpath'])
 
             decodedpath = tempfile.NamedTemporaryFile().name
-            result = subprocess.run(['afconvert', '--file', 'flac', srcpath, decodedpath])
+            result = subprocess.run(['mpg123', '-q', '-w', decodedpath, srcpath])
             if result.returncode != 0:
                 print('Fail decode:', job['dstrelpath'])
                 q.task_done()
@@ -55,7 +55,11 @@ def convert_worker(q):
             print('TODO:     ', job['dstrelpath'])
 
         # Encode the file with AAC.
-        result = subprocess.run(['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', decodedpath, tmppath])
+        command = ['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', decodedpath, tmppath]
+        if platform.system() == 'Linux':
+            # bitrate mode 3 is ~96kbps (in theory)
+            command = ['fdkaac', '--bitrate-mode=3', '--silent', '-o', tmppath, decodedpath]
+        result = subprocess.run(command)
         if result.returncode != 0:
             print('Fail encode:', job['dstrelpath'])
             q.task_done()
@@ -71,7 +75,11 @@ def convert_worker(q):
         dsttags[tagMap['tracknumber']] = job['tracknumber']
         dsttags.save()
 
+        # rename to final name after the file is complete
         os.rename(tmppath, dstpath)
+
+        # remove the temporary decoded file.
+        os.remove(decodedpath)
 
         q.task_done()
 
