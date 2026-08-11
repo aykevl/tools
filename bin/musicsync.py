@@ -76,7 +76,8 @@ def convert_worker(q):
             dsttags[tagMap['album']] = job['album']
         if job['date']:
             dsttags[tagMap['date']] = job['date']
-        dsttags[tagMap['tracknumber']] = job['tracknumber']
+        if job['tracknumber']:
+            dsttags[tagMap['tracknumber']] = job['tracknumber']
         dsttags.save()
 
         # rename to final name after the file is complete
@@ -138,12 +139,12 @@ def sync(src, dst):
         if not title:
             print('No title: ', relpath)
             continue
-        if not tracknumber:
-            print('No track: ', relpath)
-            continue
-        if '/' in tracknumber:
+        if tracknumber and '/' in tracknumber:
             tracknumber = tracknumber.split('/')[0]
-        filename = '%02d %s%s' % (int(tracknumber), title, dstext)
+        if tracknumber:
+            filename = '%02d %s%s' % (int(tracknumber), title, dstext)
+        else:
+            filename = '%s%s' % (title, dstext)
         filename = filename.replace('/', '~')
         filename = filename.replace('\\', '~')
         filename = filename.replace(':', '~')
