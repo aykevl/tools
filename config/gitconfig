@@ -7,6 +7,7 @@
         lineNumber = true
 [push]
         default = simple
+        autoSetupRemote = true
 [core]
         excludesfile = ~/src/dotfiles/gitignore
         editor = nvim
