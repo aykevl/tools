@@ -72,7 +72,8 @@ def convert_worker(q):
         dsttags = mutagen.File(tmppath)
         dsttags[tagMap['title']] = job['title']
         dsttags[tagMap['artist']] = job['artist']
-        dsttags[tagMap['album']] = job['album']
+        if job['album']:
+            dsttags[tagMap['album']] = job['album']
         if job['date']:
             dsttags[tagMap['date']] = job['date']
         dsttags[tagMap['tracknumber']] = job['tracknumber']
@@ -133,9 +134,6 @@ def sync(src, dst):
             artist = albumartist
         if not artist:
             print('No artist:', relpath)
-            continue
-        if not album:
-            print('No album: ', relpath)
             continue
         if not title:
             print('No title: ', relpath)
