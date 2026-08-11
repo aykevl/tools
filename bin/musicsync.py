@@ -98,10 +98,16 @@ def sync(src, dst):
         if os.path.basename(srcpath).startswith('.'):
             continue
 
+        relpath = os.path.relpath(srcpath, srcdir)
+
         # read tags per file type
         if srcext == '.mp3':
             dstext = '.m4a'
-            srctags = mutagen.easyid3.EasyID3(srcpath)
+            try:
+                srctags = mutagen.easyid3.EasyID3(srcpath)
+            except mutagen.id3.ID3NoHeaderError:
+                print('No ID3:   ', relpath)
+                continue
         else:
             dstext = '.m4a'
             srctags = mutagen.File(srcpath)
