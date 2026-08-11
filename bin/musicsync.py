@@ -54,6 +54,8 @@ def convert_worker(q):
                 continue
         else:
             print('TODO:     ', job['dstrelpath'])
+            q.task_done()
+            continue
 
         # Encode the file with AAC.
         command = ['afconvert', '--file', 'm4af', '--data', 'aac', '--bitrate', '96000', decodedpath, tmppath]
