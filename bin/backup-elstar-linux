@@ -32,8 +32,11 @@ borg create --verbose --filter AME --stats --progress --compression auto,zstd \
     ::"$host-{now}" \
     /usr/local/bin/lockout \
     /home/ayke/.config \
+    /home/ayke/Books \
     /home/ayke/Documents \
     /home/ayke/Pictures \
+    /home/ayke/notes \
+    /home/ayke/sleutels \
     /home/ayke/src/ayke \
     /home/ayke/src/tinygo/bluetooth \
     /home/ayke/src/tinygo/drivers \
