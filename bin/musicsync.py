@@ -125,9 +125,9 @@ def sync(src, dst):
         date = srctags.get('date', [''])[0]
         tracknumber = srctags.get('tracknumber', [''])[0]
 
-        # Handle artist separately (the MP3 player doesn't support
-        # albumartist).
-        if not artist:
+        # Prefer albumartist over artist (the MP3 player doesn't support
+        # albumartist so the artist list would get very long otherwise).
+        if albumartist:
             artist = albumartist
         if not artist:
             print('No artist:', relpath)
