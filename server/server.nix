@@ -33,8 +33,10 @@
     80 443 # web server
     6697   # IRC
     31389  # Minecraft
-    24454  # Minecraft voice chat
     8082   # Seafile
+  ];
+  networking.firewall.allowedUDPPorts = [
+    24454  # Minecraft voice chat
   ];
 
   # Automatic updates
@@ -243,7 +245,7 @@
     serviceConfig = {
       User = "minecraft";
       Group = "users";
-      ExecStart = "/run/current-system/sw/bin/java -Xmx1024M -jar ../fabric-server-mc.26.2-loader.0.19.3-launcher.1.1.1.jar nogui";
+      ExecStart = "/run/current-system/sw/bin/java -Xmx1536M -jar ../fabric-server-mc.26.2-loader.0.19.3-launcher.1.1.1.jar nogui";
       WorkingDirectory = "/home/minecraft/data";
       StandardInput = "socket";
       StandardOutput = "journal";
