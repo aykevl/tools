@@ -12,17 +12,22 @@
     eza
     file
     fish
+    gcc
     git
+    go
     htop
     hugo
     neovim
     optipng
     pwgen
     ripgrep
+    sqlite
     syncthing
     tig
     tmux
+    unzip
     wget
+    zip
   ];
   programs.neovim.enable = true;
   programs.neovim.defaultEditor = true;
