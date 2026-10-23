@@ -223,6 +223,10 @@
   # This configuration has mostly been copied from the official Minecraft
   # server in nixpkgs, but used with some modifications to be able to use
   # Fabric instead.
+  # Updating Minecraft:
+  #  - replace FabricMC JAR file, update name here in systemd config
+  #  - update mods (data/mods)
+  #  - update VanillaTweaks (data/world/datapacks)
   programs.java.enable = true;
   programs.java.package = pkgs.jdk25;
   users.users.minecraft = {
@@ -250,7 +254,7 @@
     serviceConfig = {
       User = "minecraft";
       Group = "users";
-      ExecStart = "/run/current-system/sw/bin/java -Xmx1536M -jar ../fabric-server-mc.26.2-loader.0.19.3-launcher.1.1.1.jar nogui";
+      ExecStart = "/run/current-system/sw/bin/java -Xmx1536M -jar ../fabric-server-mc.26.3-loader.0.19.5-launcher.1.1.2.jar nogui";
       WorkingDirectory = "/home/minecraft/data";
       StandardInput = "socket";
       StandardOutput = "journal";
